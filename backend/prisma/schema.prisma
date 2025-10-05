@@ -1,0 +1,28 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Idea {
+  id         Int      @id @default(autoincrement())
+  title      String
+  description String?
+  votesCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  votes      Vote[]
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  ip        String
+  idea      Idea     @relation(fields: [ideaId], references: [id])
+  ideaId    Int
+  createdAt DateTime @default(now())
+
+  @@unique([ip, ideaId])
+  @@index([ip])
+}
